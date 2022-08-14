@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ZAF07/tigerlily-e-bakery-inventories/api/rpc"
-	"github.com/ZAF07/tigerlily-e-bakery-inventories/internal/pkg/logger"
-	"github.com/ZAF07/tigerlily-e-bakery-inventories/internal/repository/inventory"
+	"github.com/Tiger-Coders/tigerlily-inventories/api/rpc"
+	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/logger"
+	"github.com/Tiger-Coders/tigerlily-inventories/internal/repository/inventory"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )

@@ -1,7 +1,7 @@
 package inventory
 
 import (
-	"github.com/ZAF07/tigerlily-e-bakery-inventories/internal/models"
+	"github.com/Tiger-Coders/tigerlily-inventories/internal/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )

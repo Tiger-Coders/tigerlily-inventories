@@ -1,14 +1,14 @@
 package router
 
 import (
-	"github.com/ZAF07/tigerlily-e-bakery-inventories/api/controller"
-	"github.com/ZAF07/tigerlily-e-bakery-inventories/internal/pkg/middleware"
+	"github.com/Tiger-Coders/tigerlily-inventories/api/controller"
+	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func Router(r *gin.Engine) *gin.Engine {
-	
+
 	// Set CORS config
 	r.Use(cors.New(cors.Config{
 		AllowCredentials: false,
@@ -27,8 +27,8 @@ func Router(r *gin.Engine) *gin.Engine {
 	inventory := r.Group("inventory")
 	{
 		inventory.GET("", inventoryAPI.GetAllInventories)
-		inventory.GET("/:type",inventoryAPI.GetInventoryByType)
-	
+		inventory.GET("/:type", inventoryAPI.GetInventoryByType)
+
 		// Get user details and past pre-checkout cart item
 		cache := r.Group("cache")
 		cacheAPI := new(controller.CacheAPI)
