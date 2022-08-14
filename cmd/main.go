@@ -10,6 +10,7 @@ import (
 
 	"github.com/Tiger-Coders/tigerlily-inventories/api/router"
 	"github.com/Tiger-Coders/tigerlily-inventories/api/rpc"
+	"github.com/Tiger-Coders/tigerlily-inventories/internal/config"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/db"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/env"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/logger"
@@ -56,8 +57,14 @@ func main() {
 	logs := logger.NewLogger()
 	logs.InfoLogger.Println("Starting up server ...")
 
-	// Set ENV vars
-	env.SetEnv()
+	appConfig := config.LoadConfig()
+
+	if appConfig.IsDBWithEnv {
+		logs.InfoLogger.Println("Starting app with env...")
+		// Set ENV vars
+		fmt.Println("Setting env")
+		env.SetEnv()
+	}
 
 	// Spin up the main server instance
 	var port = flag.String("port", ":8000", "Port to listen on")
@@ -77,8 +84,8 @@ func main() {
 	grpclistener := m.Match(cmux.Any())
 
 	// Run GO routine to run both servers at diff processes at the same time
-	go serveGRPC(grpclistener)
-	go serveHTTP(httpListener)
+	go serveGRPC(grpclistener, *appConfig)
+	go serveHTTP(httpListener, *appConfig)
 
 	fmt.Printf("Inventory Service Running@%v\n", lis.Addr())
 
@@ -89,11 +96,16 @@ func main() {
 }
 
 // GRPC Server initialisation
-func serveGRPC(l net.Listener) {
+func serveGRPC(l net.Listener, config config.GeneralConfig) {
 	grpcServer := grpc.NewServer()
 
-	// Register GRPC stubs (pass the GRPCServer and the initialisation of the service layer)
-	rpc.RegisterInventoryServiceServer(grpcServer, inventory.NewInventoryService(db.NewDB()))
+	// THIS IS TO START THE DB WITH ENV INSTEAD OF CONFIG VALUES
+	if config.IsDBWithEnv {
+		rpc.RegisterInventoryServiceServer(grpcServer, inventory.NewInventoryService(db.NewDBWithEnv()))
+	} else {
+		// Register GRPC stubs (pass the GRPCServer and the initialisation of the service layer)
+		rpc.RegisterInventoryServiceServer(grpcServer, inventory.NewInventoryService(db.NewDBWithConfig(config.PostgresDB)))
+	}
 
 	if err := grpcServer.Serve(l); err != nil {
 		log.Fatalf("error running GRPC server %+v", err)
@@ -101,9 +113,9 @@ func serveGRPC(l net.Listener) {
 }
 
 // HTTP Server initialisation (using gin)
-func serveHTTP(l net.Listener) {
+func serveHTTP(l net.Listener, appConfig config.GeneralConfig) {
 	h := gin.Default()
-	router.Router(h)
+	router.Router(h, appConfig)
 	s := &http.Server{
 		Handler: h,
 	}
