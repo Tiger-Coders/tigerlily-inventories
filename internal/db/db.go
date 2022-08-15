@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/env"
+	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/injection"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/logger"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -15,37 +16,31 @@ type Db struct {
 	db *gorm.DB
 }
 
-func NewDBWithEnv() *gorm.DB {
-	connectDBViaEnv()
+func NewDB() *gorm.DB {
+	connectDB()
 	return ORM
 }
 
-func NewDBWithConfig(conn string) *gorm.DB {
-	connectViaConfigFile(conn)
-	return ORM
-}
+func connectDB() {
+	config := injection.GetAppConfig()
+	connString := env.GetDBEnv()
 
-func connectViaConfigFile(conn string) {
-	logger := logger.NewLogger()
-
-	db, err := gorm.Open("postgres", conn)
-	if err != nil {
-		logger.ErrorLogger.Printf("Error connecting to Postgres with config file : %+v", err)
-		log.Fatalf("DB Connection error with config file: %+v", err)
+	isConfigProvided := config.IsConfigFileProvided
+	if isConfigProvided {
+		connString = config.PostgresDB
 	}
-	logger.InfoLogger.Println("Successfully connected to Database")
-	ORM = db
+
+	connectWithConnString(connString)
 }
 
-func connectDBViaEnv() {
-
+func connectWithConnString(conn string) {
 	logger := logger.NewLogger()
-	db, err := gorm.Open("postgres", env.GetDBEnv())
+	db, err := gorm.Open("postgres", conn)
 	if err != nil {
 		logger.ErrorLogger.Printf("Couldn't connect to Database %+v", err)
 		log.Fatalf("Error connectiong to Database : %+v", err)
 	}
-	logger.InfoLogger.Println("Successfully connected to Database")
+	logger.InfoLogger.Printf("Successfully connected to Database : %+v", conn)
 
 	ORM = db
 }

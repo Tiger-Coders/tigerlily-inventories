@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/Tiger-Coders/tigerlily-inventories/api/rpc"
-	"github.com/Tiger-Coders/tigerlily-inventories/internal/config"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/db"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/logger"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/service/inventory"
@@ -21,15 +20,10 @@ type InventoryAPI struct {
 }
 
 // Init the DB here (open a connection to the DB) and pass it along to service and repo layer
-func NewInventoryAPI(config config.GeneralConfig) (inventoryAPI *InventoryAPI) {
-
+func NewInventoryAPI() (inventoryAPI *InventoryAPI) {
 	inventoryAPI = &InventoryAPI{
 		logs: *logger.NewLogger(),
-		db:   db.NewDBWithConfig(config.PostgresDB),
-	}
-
-	if config.IsDBWithEnv {
-		inventoryAPI.db = db.NewDBWithEnv()
+		db:   db.NewDB(),
 	}
 	return
 }

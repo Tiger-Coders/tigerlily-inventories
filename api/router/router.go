@@ -2,13 +2,12 @@ package router
 
 import (
 	"github.com/Tiger-Coders/tigerlily-inventories/api/controller"
-	"github.com/Tiger-Coders/tigerlily-inventories/internal/config"
 	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func Router(r *gin.Engine, config config.GeneralConfig) *gin.Engine {
+func Router(r *gin.Engine) *gin.Engine {
 
 	// Set CORS config
 	r.Use(cors.New(cors.Config{
@@ -24,10 +23,8 @@ func Router(r *gin.Engine, config config.GeneralConfig) *gin.Engine {
 	// Get all inventory
 	// Get all invetory by type
 	// inventoryAPI := new(controller.InventoryAPI)
-	inventoryAPI := controller.NewInventoryAPI(config)
-	if config.IsDBWithEnv {
-		inventoryAPI = controller.NewInventoryAPI(config)
-	}
+	inventoryAPI := controller.NewInventoryAPI()
+
 	inventory := r.Group("inventory")
 	{
 		inventory.GET("", inventoryAPI.GetAllInventories)
