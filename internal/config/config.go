@@ -1,69 +1,25 @@
 package config
 
 import (
-	"flag"
-	"sync"
-
-	"github.com/Tiger-Coders/tigerlily-inventories/internal/pkg/logger"
-	"github.com/fsnotify/fsnotify"
-	"github.com/spf13/viper"
+	"fmt"
 )
 
+/*
+	💡Could user wire for loggers too
+*/
+
 type GeneralConfig struct {
-	PostgresDB string `mapstructure:"postgresDB"`
+	PostgresHost    string `mapstructure:"postgres_host" json:"postgres_host"`
+	PostgresUser    string `mapstructure:"postgres_user"`
+	PostgresDBName  string `mapstructure:"postgres_db_name" json:"postgres_db_name"`
+	PostgresSSLMode string `mapstructure:"postgres_ssl_mode" json:"postgres_ssl_mode"`
+	PostgresPort    string `mapstructure:"postgres_port" json:"postgres_port"`
+
+	ServicePort string `mapstructure:"service_port" json:"service_port"`
 
 	IsConfigFileProvided bool
 }
 
-func LoadConfig() (config *GeneralConfig) {
-
-	// config = configLoader()()
-	/*
-		💡 Setting the function to a variable allows us to call this function in a neater way. Rather than like the one above
-	*/
-	config = singleConfigLoader()
-	return
-}
-
-var singleConfigLoader = configLoader()
-
-func configLoader() func() *GeneralConfig {
-	var appConfig *GeneralConfig
-	var once sync.Once
-
-	/*
-		💡 sync.Once runs this function ONLY ONCE. This way, we don't always have the risk of overiding the config file
-	*/
-	return func() *GeneralConfig {
-		once.Do(func() {
-			var configFilePath string
-
-			flag.StringVar(&configFilePath, "config", "config.yml", "Absolute path to configuration file")
-			flag.Parse()
-			appConfig = parseAndWatchConfigFile(configFilePath)
-		})
-		return appConfig
-	}
-}
-
-func parseAndWatchConfigFile(filePath string) (config *GeneralConfig) {
-	log := logger.NewLogger()
-	config = &GeneralConfig{}
-
-	viper.SetConfigFile(filePath)
-	viper.ReadInConfig()
-	viperUnmarshalConfig(config, log)
-
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.InfoLogger.Println("[CONFIG] Config has changed: ", e.Name)
-		viperUnmarshalConfig(config, log)
-	})
-	return
-}
-
-func viperUnmarshalConfig(config *GeneralConfig, logger *logger.Logger) {
-	if err := viper.Unmarshal(config); err != nil {
-		logger.ErrorLogger.Panicf("[CONFIG] Error unmarshaling app config on change : %+v\n", err)
-	}
+func (c *GeneralConfig) GetDBString() string {
+	return fmt.Sprintf("host=%s user=%s dbname=%s port=%s sslmode=%s", c.PostgresHost, c.PostgresUser, c.PostgresDBName, c.PostgresPort, c.PostgresSSLMode)
 }

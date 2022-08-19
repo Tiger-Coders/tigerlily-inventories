@@ -17,3 +17,8 @@ func GetAppConfig() *config.GeneralConfig {
 	generalConfig := file.ConfigProvider()
 	return generalConfig
 }
+
+func GetDBString() string {
+	string2 := file.DBStringProvider()
+	return string2
+}

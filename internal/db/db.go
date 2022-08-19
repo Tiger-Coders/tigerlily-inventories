@@ -25,9 +25,8 @@ func connectDB() {
 	config := injection.GetAppConfig()
 	connString := env.GetDBEnv()
 
-	isConfigProvided := config.IsConfigFileProvided
-	if isConfigProvided {
-		connString = config.PostgresDB
+	if config.IsConfigFileProvided {
+		connString = injection.GetDBString()
 	}
 
 	connectWithConnString(connString)

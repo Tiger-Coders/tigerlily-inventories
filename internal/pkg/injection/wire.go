@@ -14,3 +14,8 @@ func GetAppConfig() *config.GeneralConfig {
 	wire.Build(file.ConfigProvider)
 	return &config.GeneralConfig{}
 }
+
+func GetDBString() string {
+	wire.Build(file.DBStringProvider)
+	return GetAppConfig().GetDBString()
+}
