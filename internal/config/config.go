@@ -9,11 +9,12 @@ import (
 */
 
 type GeneralConfig struct {
-	PostgresHost    string `mapstructure:"postgres_host" json:"postgres_host"`
-	PostgresUser    string `mapstructure:"postgres_user"`
-	PostgresDBName  string `mapstructure:"postgres_db_name" json:"postgres_db_name"`
-	PostgresSSLMode string `mapstructure:"postgres_ssl_mode" json:"postgres_ssl_mode"`
-	PostgresPort    string `mapstructure:"postgres_port" json:"postgres_port"`
+	PostgresHost     string `mapstructure:"postgres_host" json:"postgres_host"`
+	PostgresUser     string `mapstructure:"postgres_user"`
+	PostgresPassword string `mapstructure:"postgres_db_password"`
+	PostgresDBName   string `mapstructure:"postgres_db_name" json:"postgres_db_name"`
+	PostgresSSLMode  string `mapstructure:"postgres_ssl_mode" json:"postgres_ssl_mode"`
+	PostgresPort     string `mapstructure:"postgres_port" json:"postgres_port"`
 
 	ServicePort string `mapstructure:"service_port" json:"service_port"`
 
@@ -21,5 +22,5 @@ type GeneralConfig struct {
 }
 
 func (c *GeneralConfig) GetDBString() string {
-	return fmt.Sprintf("host=%s user=%s dbname=%s port=%s sslmode=%s", c.PostgresHost, c.PostgresUser, c.PostgresDBName, c.PostgresPort, c.PostgresSSLMode)
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", c.PostgresHost, c.PostgresUser, c.PostgresPassword, c.PostgresDBName, c.PostgresPort, c.PostgresSSLMode)
 }
