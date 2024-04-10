@@ -48,6 +48,7 @@ func (a InventoryAPI) GetAllInventories(c *gin.Context) {
 		Offset: int32(offset),
 	}
 
+	// TODO: CHECK THIS. WHY CREATE NEW INSTANCE EACH TIME
 	// Init a new service instance passing the DB instance (service will pass this DB inatance to the repo layer later on)
 	service := inventory.NewInventoryService(a.db)
 	ctx := context.Background()

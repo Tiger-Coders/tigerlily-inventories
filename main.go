@@ -1,3 +1,4 @@
+// TODO: Sort out the configuratiion for inventory service. Refer to tigerlily repo for example of what we need
 package main
 
 import (
