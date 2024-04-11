@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+*_mock.yml
 
 # Test binary, built with `go test -c`
 *.test
@@ -18,3 +19,4 @@ config.yml
 logs.txt
 sqlboiler.toml
 gen_sql_seed.sh
+air-tmp
