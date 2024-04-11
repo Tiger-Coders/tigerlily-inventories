@@ -9,18 +9,23 @@ import (
 */
 
 type GeneralConfig struct {
-	PostgresHost     string `mapstructure:"postgres_host" json:"postgres_host"`
-	PostgresUser     string `mapstructure:"postgres_user"`
-	PostgresPassword string `mapstructure:"postgres_db_password"`
-	PostgresDBName   string `mapstructure:"postgres_db_name" json:"postgres_db_name"`
-	PostgresSSLMode  string `mapstructure:"postgres_ssl_mode" json:"postgres_ssl_mode"`
-	PostgresPort     string `mapstructure:"postgres_port" json:"postgres_port"`
+	PostgresConfig `mapstructure:"postgres_db" json:"postgres_db"`
 
 	ServicePort string `mapstructure:"service_port" json:"service_port"`
 
 	IsConfigFileProvided bool
 }
 
-func (c *GeneralConfig) GetDBString() string {
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", c.PostgresHost, c.PostgresUser, c.PostgresPassword, c.PostgresDBName, c.PostgresPort, c.PostgresSSLMode)
+type PostgresConfig struct {
+	Host     string `mapstructure:"host" json:"host"`
+	Port     string `mapstructure:"port" json:"port"`
+	User     string `mapstructure:"user" json:"user"`
+	Password string `mapstructure:"password" json:"password"`
+	Name     string `mapstructure:"name" json:"name"`
+	SSL      string `mapstructure:"ssl" json:"ssl"`
+	MaxConn  string `mapstructure:"max_conns" json:"max_conns"`
+}
+
+func (p *PostgresConfig) GetDBString() string {
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", p.Host, p.User, p.Password, p.Name, p.Port, p.SSL)
 }
