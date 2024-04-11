@@ -2,7 +2,6 @@ package inventory
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/Tiger-Coders/tigerlily-inventories/api/rpc"
@@ -57,7 +56,6 @@ func (srv Service) GetAllInventories(ctx context.Context, req *rpc.GetAllInvento
 		})
 	}
 
-	fmt.Printf("HERE ---> %+v", i[0])
 	resp = &rpc.GetAllInventoriesResp{
 		Inventories: i,
 	}
