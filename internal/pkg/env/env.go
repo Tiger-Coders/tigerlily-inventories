@@ -11,6 +11,7 @@ func SetEnv() {
 
 	logs := logger.NewLogger()
 
+	logs.InfoLogger.Println("Setting ENV ... ", os.Args)
 	serverENV := os.Args[1]
 	dbHost := os.Args[2]
 	dbUser := os.Args[3]
