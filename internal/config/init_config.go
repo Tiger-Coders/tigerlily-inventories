@@ -44,7 +44,11 @@ func parseAndWatchConfigFile(filePath string) (config *GeneralConfig) {
 	config = &GeneralConfig{}
 
 	viper.SetConfigFile(filePath)
-	viper.ReadInConfig()
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.ErrorLogger.Printf("no config file found: %+v", err)
+		return &GeneralConfig{}
+	}
 	viperUnmarshalConfig(config, log)
 
 	viper.WatchConfig()
@@ -52,6 +56,10 @@ func parseAndWatchConfigFile(filePath string) (config *GeneralConfig) {
 		log.InfoLogger.Println("[CONFIG] Config has changed: ", e.Name)
 		viperUnmarshalConfig(config, log)
 	})
+
+	// TODO: Refactor this. Can be neater. Goal is to perform a singleton pattern to load the config file once
+	// Setting to true since we successfully oarsed the config file.
+	// config.IsConfigFileProvided = true
 	return
 }
 
@@ -60,7 +68,3 @@ func viperUnmarshalConfig(config *GeneralConfig, logger *logger.Logger) {
 		logger.ErrorLogger.Panicf("[CONFIG] Error unmarshaling app config on change : %+v\n", err)
 	}
 }
-
-// func GetDBString() string {
-// 	return LoadConfig().GetDBString()
-// }
