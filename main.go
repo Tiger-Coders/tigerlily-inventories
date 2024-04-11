@@ -67,17 +67,18 @@ func main() {
 		fmt.Println("No config file detacted. Setting env...")
 		env.SetEnv()
 	}
-	inventoryPort := fmt.Sprintf(":%s", appConfig.ServicePort)
 
 	// Spin up the main server instance
-	var port = flag.String("port", inventoryPort, "Port to listen on")
-	lis, err := net.Listen("tcp", *port)
-
+	var port = flag.String("port", ":8000", "Port to listen on")
 	if appConfig.IsConfigFileProvided {
+		inventoryPort := fmt.Sprintf(":%s", appConfig.ServicePort)
 		port = &inventoryPort
 	}
+
+	lis, err := net.Listen("tcp", *port)
+
 	if err != nil {
-		logs.ErrorLogger.Println("Something went wrong in the server startup")
+		logs.ErrorLogger.Printf("Something went wrong in the server startup: %+v", err)
 		log.Fatalf("Error connecting tcp port %s", *port)
 	}
 	logs.InfoLogger.Println("Successfull server init")
