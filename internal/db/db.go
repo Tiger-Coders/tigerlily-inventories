@@ -37,8 +37,8 @@ func connectWithConnString(conn string) {
 	db, err := gorm.Open("postgres", conn)
 	// db, err := gorm.Open("postgres", "tiger:tigercoders@tiger-db")
 	if err != nil {
-		logger.ErrorLogger.Printf("Couldn't connect to Database %+v", err)
-		log.Fatalf("Error connectiong to Database : %+v", err)
+		logger.ErrorLogger.Printf("Couldn't connect to Database| error: %+v | db conn string: %+v", err, conn)
+		log.Fatalf("Error connectiong to Database | error: %+v | db conn string: %+v", err, conn)
 	}
 	logger.InfoLogger.Printf("Successfully connected to Database : %+v", conn)
 
